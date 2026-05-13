@@ -848,7 +848,7 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/neo4j-driver/lib/browser/neo4j-web.min.js"></script>
     <script>
-        const OPENAI_MODEL = "gpt-4.1-mini", API_KEY_KEY = "morrisonsOpenAiApiKey", NEO4J_CREDS_KEY = "neo4jCreds";
+        const OPENAI_MODEL = "gpt-4o-mini", API_KEY_KEY = "morrisonsOpenAiApiKey", NEO4J_CREDS_KEY = "neo4jCreds";
         const $ = id => document.getElementById(id);
         const form = $("couponForm"), apiKeyInput = $("apiKeyInput"), saveKeyBtn = $("saveKeyButton"), clearKeyBtn = $("clearKeyButton"), keyStatus = $("keyStatus"), photoInput = $("couponPhoto"), preview = $("preview"), statusBox = $("status"), scanBtn = $("scanButton"), clearAllBtn = $("clearAllButton"), couponList = $("couponList"), couponCount = $("couponCount"), searchInput = $("searchInput"), aiSearchBtn = $("aiSearchBtn"), groupTabs = $("groupTabs"), calGrid = $("calGrid"), calTitle = $("calTitle"), calPrev = $("calPrev"), calNext = $("calNext"), neo4jUri = $("neo4jUri"), neo4jUser = $("neo4jUser"), neo4jPass = $("neo4jPass"), saveNeoBtn = $("saveNeoButton"), clearNeoBtn = $("clearNeoButton"), neoStatus = $("neoStatus");
 
@@ -974,15 +974,16 @@
             try {
                 aiSearchBtn.disabled = true; setStatus("AI searching…");
                 const list = coupons.map((c, i) => `${i}:${c.productName}|${c.storeName}|${c.discountAmount}|${c.expiryDate}`).join("\n");
-                const r = await fetch("https://api.openai.com/v1/responses", {
+                const r = await fetch("https://api.openai.com/v1/chat/completions", {
                     method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
                     body: JSON.stringify({
-                        model: OPENAI_MODEL, input: [{ role: "user", content: [{ type: "input_text", text: `Given these coupons (index:product|store|discount|expiry):\n${list}\n\nUser query: "${q}"\n\nReturn a JSON array of matching coupon indices. Today is ${new Date().toISOString().slice(0, 10)}. Example: [0,2,5]. If none match, return [].` }] }],
-                        text: { format: { type: "json_schema", name: "search_results", schema: { type: "object", additionalProperties: false, properties: { indices: { type: "array", items: { type: "integer" } } }, required: ["indices"] }, strict: true } }
+                        model: OPENAI_MODEL, 
+                        messages: [{ role: "user", content: `Given these coupons (index:product|store|discount|expiry):\n${list}\n\nUser query: "${q}"\n\nReturn a JSON array of matching coupon indices. Today is ${new Date().toISOString().slice(0, 10)}. Example: {"indices": [0,2,5]}. If none match, return {"indices": []}.` }],
+                        response_format: { type: "json_schema", json_schema: { name: "search_results", strict: true, schema: { type: "object", additionalProperties: false, properties: { indices: { type: "array", items: { type: "integer" } } }, required: ["indices"] } } }
                     })
                 });
-                if (!r.ok) throw new Error("AI search failed: " + r.status);
-                const d = await r.json(), txt = d.output_text || d.output?.[0]?.content?.find(i => i.type === "output_text")?.text;
+                if (!r.ok) { const t = await r.text(); throw new Error("AI search failed: " + r.status + " " + t); }
+                const d = await r.json(), txt = d.choices?.[0]?.message?.content;
                 const parsed = JSON.parse(txt); searchResults = parsed.indices.map(i => coupons[i]).filter(Boolean);
                 renderCoupons(); updateStats(); setStatus(`AI found ${searchResults.length} result(s).`);
             } catch (err) { setStatus(err.message, true); } finally { aiSearchBtn.disabled = false; }
@@ -1064,15 +1065,16 @@
 
         // ── OpenAI extract ──
         async function extractCoupon(url, key) {
-            const r = await fetch("https://api.openai.com/v1/responses", {
+            const r = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key },
                 body: JSON.stringify({
-                    model: OPENAI_MODEL, input: [{ role: "user", content: [{ type: "input_text", text: "Read this coupon photo. Apply specific rules to read and extract Morrisons coupon formatting accurately. Extract: storeName, discountAmount, productName, expiryDate, category (e.g., Fuel, Groceries, Electronics, Clothing, etc). Return strict JSON. Use YYYY-MM-DD for dates. Empty string if not visible." }, { type: "input_image", image_url: url }] }],
-                    text: { format: { type: "json_schema", name: "coupon_details", schema: { type: "object", additionalProperties: false, properties: { storeName: { type: "string" }, discountAmount: { type: "string" }, productName: { type: "string" }, expiryDate: { type: "string" }, category: { type: "string" } }, required: ["storeName", "discountAmount", "productName", "expiryDate", "category"] }, strict: true } }
+                    model: OPENAI_MODEL, 
+                    messages: [{ role: "user", content: [{ type: "text", text: "Read this coupon photo. Apply specific rules to read and extract Morrisons coupon formatting accurately. Extract: storeName, discountAmount, productName, expiryDate, category (e.g., Fuel, Groceries, Electronics, Clothing, etc). Return strict JSON. Use YYYY-MM-DD for dates. Empty string if not visible." }, { type: "image_url", image_url: { url: url } }] }],
+                    response_format: { type: "json_schema", json_schema: { name: "coupon_details", strict: true, schema: { type: "object", additionalProperties: false, properties: { storeName: { type: "string" }, discountAmount: { type: "string" }, productName: { type: "string" }, expiryDate: { type: "string" }, category: { type: "string" } }, required: ["storeName", "discountAmount", "productName", "expiryDate", "category"] } } }
                 })
             });
             if (!r.ok) { const t = await r.text(); throw new Error("OpenAI error: " + r.status + " " + t); }
-            const d = await r.json(), txt = d.output_text || d.output?.[0]?.content?.find(i => i.type === "output_text")?.text;
+            const d = await r.json(), txt = d.choices?.[0]?.message?.content;
             if (!txt) throw new Error("No coupon data returned."); return JSON.parse(txt);
         }
 
