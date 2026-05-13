@@ -4,23 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>My Morrisons Coupons</title>
+    <title>My coupons</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --g: #064F35;
-            --gl: #0a7a54;
-            --gold: #FFD700;
-            --gold2: #ffe066;
-            --ink: #1a1f25;
-            --mut: #6b7a8d;
-            --surf: rgba(255, 255, 255, .72);
-            --bg: #f0f4f1;
-            --ln: rgba(6, 79, 53, .12);
-            --red: #d32f2f;
-            --r: 14px;
-            --sh: 0 8px 32px rgba(6, 79, 53, .1)
+            --g: #2dd4bf;
+            --gl: #5eead4;
+            --gold: #fbbf24;
+            --gold2: #fcd34d;
+            --ink: #f8fafc;
+            --mut: #94a3b8;
+            --surf: rgba(15, 23, 42, 0.6);
+            --bg: #020617;
+            --ln: rgba(255, 255, 255, 0.1);
+            --red: #f87171;
+            --r: 16px;
+            --sh: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 20px rgba(45, 212, 191, 0.3);
         }
 
         * {
@@ -34,7 +35,9 @@
             color: var(--ink);
             min-height: 100vh;
             background: var(--bg);
-            background-image: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 215, 0, .2), transparent 60%)
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(45, 212, 191, 0.15), transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 40%);
         }
 
         .app {
@@ -72,18 +75,19 @@
         h1 {
             font-size: clamp(1.5rem, 3.5vw, 2.2rem);
             font-weight: 800;
-            color: var(--g);
+            color: var(--ink);
+            text-shadow: var(--glow);
             letter-spacing: -.03em
         }
 
         .badge {
             padding: 6px 14px;
             border-radius: 999px;
-            background: linear-gradient(135deg, var(--gold), var(--gold2));
-            color: var(--g);
-            font-weight: 700;
+            background: linear-gradient(135deg, var(--g), var(--gl));
+            color: #020617;
+            font-weight: 800;
             font-size: .78rem;
-            box-shadow: 0 2px 10px rgba(255, 215, 0, .3)
+            box-shadow: var(--glow);
         }
 
         /* Search */
@@ -109,7 +113,7 @@
         .search-wrap input:focus {
             outline: none;
             border-color: var(--gl);
-            box-shadow: 0 0 0 3px rgba(6, 79, 53, .1)
+            box-shadow: var(--glow);
         }
 
         .search-icon {
@@ -131,7 +135,8 @@
             border: 0;
             border-radius: 10px;
             background: linear-gradient(135deg, var(--g), var(--gl));
-            color: #fff;
+            color: #020617;
+            box-shadow: var(--glow);
             font: inherit;
             font-size: .78rem;
             font-weight: 600;
@@ -246,9 +251,9 @@
         .info {
             padding: 10px 12px;
             border-radius: 8px;
-            background: linear-gradient(135deg, #fffce6, #fff9d0);
+            background: rgba(251, 191, 36, 0.1);
             border-left: 3px solid var(--gold);
-            color: #6b5900;
+            color: var(--gold);
             font-size: .78rem;
             line-height: 1.4;
             margin-bottom: 10px
@@ -271,7 +276,7 @@
             padding: 0 12px;
             border: 1.5px solid var(--ln);
             border-radius: 8px;
-            background: rgba(255, 255, 255, .8);
+            background: rgba(15, 23, 42, .8);
             color: var(--ink);
             font: inherit;
             font-size: .85rem;
@@ -281,7 +286,7 @@
         input:focus {
             outline: none;
             border-color: var(--gl);
-            box-shadow: 0 0 0 3px rgba(6, 79, 53, .1)
+            box-shadow: var(--glow);
         }
 
         .kr {
@@ -312,12 +317,13 @@
             text-align: center;
             cursor: pointer;
             transition: border .2s, background .2s;
-            background: rgba(255, 255, 255, .4)
+            background: rgba(15, 23, 42, .4)
         }
 
         .fdrop:hover {
             border-color: var(--gl);
-            background: rgba(6, 79, 53, .03)
+            background: rgba(45, 212, 191, .05);
+            box-shadow: var(--glow);
         }
 
         .fdrop input {
@@ -361,8 +367,8 @@
 
         .bp {
             background: linear-gradient(135deg, var(--g), var(--gl));
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(6, 79, 53, .2)
+            color: #020617;
+            box-shadow: var(--glow);
         }
 
         .bp:hover {
@@ -371,14 +377,15 @@
         }
 
         .bs {
-            background: #fff;
-            color: var(--g);
+            background: transparent;
+            color: var(--ink);
             border: 1.5px solid var(--ln)
         }
 
         .bs:hover {
-            background: rgba(6, 79, 53, .04);
-            border-color: var(--gl)
+            background: rgba(255, 255, 255, .05);
+            border-color: var(--gl);
+            box-shadow: var(--glow);
         }
 
         .bl {
@@ -465,18 +472,28 @@
             font-size: .78rem;
             border-radius: 6px;
             cursor: default;
-            transition: background .15s
+            transition: all .2s
         }
 
         .cal-cell.today {
-            background: rgba(6, 79, 53, .08);
+            background: rgba(45, 212, 191, .15);
             font-weight: 700;
             color: var(--g)
         }
 
         .cal-cell.has-coupon {
             font-weight: 700;
-            color: var(--g)
+            color: var(--g);
+            cursor: pointer;
+        }
+
+        .cal-cell.has-coupon:hover {
+            outline: 2px solid var(--gl);
+            outline-offset: -2px;
+            box-shadow: var(--glow);
+            background: rgba(45, 212, 191, 0.1);
+            transform: scale(1.1);
+            z-index: 2;
         }
 
         .cal-cell.has-coupon::after {
@@ -488,11 +505,12 @@
             width: 5px;
             height: 5px;
             border-radius: 50%;
-            background: var(--gold)
+            background: var(--gold);
+            box-shadow: 0 0 5px var(--gold);
         }
 
         .cal-cell.expiring-day {
-            background: rgba(211, 47, 47, .08);
+            background: rgba(248, 113, 113, .15);
             color: var(--red)
         }
 
@@ -501,7 +519,7 @@
         }
 
         .cal-cell.other {
-            color: #ccc
+            color: rgba(255, 255, 255, 0.2);
         }
 
         /* Groups */
@@ -518,7 +536,7 @@
             border-radius: 999px;
             font-size: .78rem;
             font-weight: 600;
-            background: rgba(255, 255, 255, .7);
+            background: rgba(15, 23, 42, .7);
             border: 1.5px solid var(--ln);
             color: var(--mut);
             cursor: pointer;
@@ -528,9 +546,9 @@
 
         .tab.active {
             background: var(--g);
-            color: #fff;
+            color: #020617;
             border-color: var(--g);
-            box-shadow: 0 3px 12px rgba(6, 79, 53, .2)
+            box-shadow: var(--glow);
         }
 
         .tab .tc {
@@ -551,10 +569,11 @@
         .cnt {
             padding: 5px 12px;
             border-radius: 999px;
-            background: linear-gradient(135deg, var(--gold), var(--gold2));
-            color: var(--g);
+            background: linear-gradient(135deg, var(--g), var(--gl));
+            color: #020617;
             font-weight: 700;
-            font-size: .78rem
+            font-size: .78rem;
+            box-shadow: var(--glow);
         }
 
         .coupon-list {
@@ -576,8 +595,9 @@
         }
 
         .coupon:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 48px rgba(6, 79, 53, .12)
+            transform: translateY(-4px);
+            box-shadow: var(--glow);
+            border-color: var(--g);
         }
 
         @keyframes su {
@@ -593,8 +613,8 @@
         }
 
         .coupon.expiring {
-            border-color: var(--red);
-            background: rgba(211, 47, 47, .05)
+            border-color: rgba(248, 113, 113, 0.5);
+            background: rgba(248, 113, 113, .05)
         }
 
         .coupon.expiring::before {
@@ -614,7 +634,7 @@
 
         .coupon.expired {
             opacity: .55;
-            border-color: #ccc
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .coupon.expired::before {
@@ -624,7 +644,7 @@
             right: 0;
             padding: 5px 12px;
             border-bottom-left-radius: 8px;
-            background: #888;
+            background: rgba(255, 255, 255, 0.2);
             color: #fff;
             font-size: .68rem;
             font-weight: 700;
@@ -740,7 +760,7 @@
         <header>
             <div class="logo">
                 <div class="logo-icon"><span>🏷️</span></div>
-                <h1>My Coupons</h1>
+                <h1>My coupons</h1>
             </div>
             <div class="badge">💾 Saved locally</div>
         </header>
@@ -836,7 +856,7 @@
             e.preventDefault(); const f = photoInput.files[0]; if (!f) { setStatus("Choose a photo first.", true); return; } const k = getApiKey(); if (!k) { setStatus("Save your API key first.", true); return; }
             try {
                 scanBtn.disabled = true; setStatus("Reading coupon…"); const url = await resizeImg(f), c = await extractCoupon(url, k);
-                const s = { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), storeName: cl(c.storeName), discountAmount: cl(c.discountAmount), productName: cl(c.productName), expiryDate: normDate(c.expiryDate), createdAt: new Date().toISOString() };
+                const s = { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), storeName: cl(c.storeName), discountAmount: cl(c.discountAmount), productName: cl(c.productName), expiryDate: normDate(c.expiryDate), category: cl(c.category) || "Other", createdAt: new Date().toISOString() };
                 coupons.unshift(s); saveCoupons(); renderAll(); form.reset(); updateKeyStatus(); preview.style.display = "none"; preview.removeAttribute("src"); setStatus("Coupon saved ✓");
             } catch (err) { setStatus(err.message || "Could not read coupon.", true); } finally { scanBtn.disabled = false; }
         };
@@ -870,14 +890,14 @@
         // ── Grouping ──
         function getGroups() {
             const groups = { all: coupons }; const today = new Date(); today.setHours(0, 0, 0, 0);
-            const stores = {}; coupons.forEach(c => {
-                const s = c.storeName || "Other"; if (!stores[s]) stores[s] = []; stores[s].push(c);
+            const categories = {}; coupons.forEach(c => {
+                const s = c.category || "Other"; if (!categories[s]) categories[s] = []; categories[s].push(c);
                 const exp = parseDate(c.expiryDate), diff = exp ? Math.ceil((exp - today) / 864e5) : null;
                 if (diff !== null && diff < 0) { if (!groups["Expired"]) groups["Expired"] = []; groups["Expired"].push(c); }
                 else if (diff !== null && diff <= 3) { if (!groups["Expiring Soon"]) groups["Expiring Soon"] = []; groups["Expiring Soon"].push(c); }
                 else if (diff !== null && diff <= 7) { if (!groups["This Week"]) groups["This Week"] = []; groups["This Week"].push(c); }
                 else if (diff !== null && diff <= 30) { if (!groups["This Month"]) groups["This Month"] = []; groups["This Month"].push(c); }
-            }); Object.keys(stores).forEach(s => { if (stores[s].length > 0) groups[s] = stores[s]; }); return groups;
+            }); Object.keys(categories).forEach(s => { if (categories[s].length > 0) groups[s] = categories[s]; }); return groups;
         }
 
         function renderTabs() {
@@ -946,8 +966,8 @@
             const r = await fetch("https://api.openai.com/v1/responses", {
                 method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key },
                 body: JSON.stringify({
-                    model: OPENAI_MODEL, input: [{ role: "user", content: [{ type: "input_text", text: "Read this coupon photo. Extract: storeName, discountAmount, productName, expiryDate. Return strict JSON. Use YYYY-MM-DD for dates. Empty string if not visible." }, { type: "input_image", image_url: url }] }],
-                    text: { format: { type: "json_schema", name: "coupon_details", schema: { type: "object", additionalProperties: false, properties: { storeName: { type: "string" }, discountAmount: { type: "string" }, productName: { type: "string" }, expiryDate: { type: "string" } }, required: ["storeName", "discountAmount", "productName", "expiryDate"] }, strict: true } }
+                    model: OPENAI_MODEL, input: [{ role: "user", content: [{ type: "input_text", text: "Read this coupon photo. Extract: storeName, discountAmount, productName, expiryDate, category (e.g., Fuel, Groceries, Electronics, Clothing, etc). Return strict JSON. Use YYYY-MM-DD for dates. Empty string if not visible." }, { type: "input_image", image_url: url }] }],
+                    text: { format: { type: "json_schema", name: "coupon_details", schema: { type: "object", additionalProperties: false, properties: { storeName: { type: "string" }, discountAmount: { type: "string" }, productName: { type: "string" }, expiryDate: { type: "string" }, category: { type: "string" } }, required: ["storeName", "discountAmount", "productName", "expiryDate", "category"] }, strict: true } }
                 })
             });
             if (!r.ok) { const t = await r.text(); throw new Error("OpenAI error: " + r.status + " " + t); }
