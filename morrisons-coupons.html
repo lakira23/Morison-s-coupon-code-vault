@@ -126,7 +126,9 @@
       color: var(--ink);
     }
 
-    input[type="password"] {
+    input[type="password"],
+    input[type="text"],
+    input[type="url"] {
       width: 100%;
       min-height: 44px;
       padding: 10px 12px;
@@ -152,6 +154,29 @@
       margin-bottom: 18px;
       color: var(--muted);
       font-size: 0.94rem;
+    }
+
+    .settings-group {
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .settings-group:last-of-type {
+      border-bottom: 0;
+    }
+
+    .settings-group h3 {
+      margin: 0 0 12px;
+      color: var(--morrisons-green);
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    .field-stack {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .preview {
@@ -369,16 +394,40 @@
       <form class="panel" id="couponForm">
         <h2>Add a coupon</h2>
         <p class="hint">Upload a clear photo and the app will read the coupon details for you.</p>
-        <p class="key-warning">Your OpenAI API key is saved only in this browser on this device. It is not stored in the website file or uploaded anywhere except OpenAI when reading a coupon.</p>
 
-        <label for="apiKeyInput">OpenAI API key</label>
-        <div class="key-row">
-          <input id="apiKeyInput" type="password" autocomplete="off" placeholder="sk-...">
-          <button id="saveKeyButton" class="secondary" type="button">Save key</button>
+        <div class="settings-group">
+          <h3>OpenAI settings</h3>
+          <p class="key-warning">Enter your OpenAI API key here. It is saved only in this browser on this device.</p>
+          <label for="apiKeyInput">OpenAI API key</label>
+          <div class="key-row">
+            <input id="apiKeyInput" type="password" autocomplete="off" placeholder="sk-...">
+            <button id="saveKeyButton" class="secondary" type="button">Save key</button>
+          </div>
+          <div class="key-tools">
+            <span id="keyStatus">No API key saved.</span>
+            <button id="clearKeyButton" class="link-button" type="button">Clear key</button>
+          </div>
         </div>
-        <div class="key-tools">
-          <span id="keyStatus">No API key saved.</span>
-          <button id="clearKeyButton" class="link-button" type="button">Clear key</button>
+
+        <div class="settings-group">
+          <h3>Neo4j settings</h3>
+          <p class="key-warning">Enter your Neo4j password here. It is saved only in this browser and is needed to sync coupons with Neo4j.</p>
+          <div class="field-stack">
+            <label for="neo4jUriInput">Neo4j URI</label>
+            <input id="neo4jUriInput" type="url" autocomplete="off">
+            <label for="neo4jUsernameInput">Neo4j username</label>
+            <input id="neo4jUsernameInput" type="text" autocomplete="off">
+            <label for="neo4jPasswordInput">Neo4j password</label>
+            <input id="neo4jPasswordInput" type="password" autocomplete="off" placeholder="Neo4j password">
+          </div>
+          <div class="key-row">
+            <button id="saveNeo4jButton" class="secondary" type="button">Save Neo4j</button>
+            <button id="loadNeo4jButton" class="secondary" type="button">Load coupons</button>
+          </div>
+          <div class="key-tools">
+            <span id="neo4jStatus">Neo4j is not connected.</span>
+            <button id="clearNeo4jButton" class="link-button" type="button">Clear Neo4j</button>
+          </div>
         </div>
 
         <label for="couponPhoto">Coupon photo</label>
@@ -402,16 +451,27 @@
     </section>
   </main>
 
+  <script src="https://unpkg.com/neo4j-driver@5/lib/browser/neo4j-web.min.js"></script>
   <script>
     const OPENAI_MODEL = "gpt-4.1-mini";
     const STORAGE_KEY = "morrisonsCoupons";
     const API_KEY_STORAGE_KEY = "morrisonsOpenAiApiKey";
+    const NEO4J_URI_DEFAULT = "neo4j+s://89c67402.databases.neo4j.io";
+    const NEO4J_USERNAME_DEFAULT = "neo4j";
+    const NEO4J_SETTINGS_STORAGE_KEY = "morrisonsNeo4jSettings";
 
     const form = document.getElementById("couponForm");
     const apiKeyInput = document.getElementById("apiKeyInput");
     const saveKeyButton = document.getElementById("saveKeyButton");
     const clearKeyButton = document.getElementById("clearKeyButton");
     const keyStatus = document.getElementById("keyStatus");
+    const neo4jUriInput = document.getElementById("neo4jUriInput");
+    const neo4jUsernameInput = document.getElementById("neo4jUsernameInput");
+    const neo4jPasswordInput = document.getElementById("neo4jPasswordInput");
+    const saveNeo4jButton = document.getElementById("saveNeo4jButton");
+    const loadNeo4jButton = document.getElementById("loadNeo4jButton");
+    const clearNeo4jButton = document.getElementById("clearNeo4jButton");
+    const neo4jStatus = document.getElementById("neo4jStatus");
     const photoInput = document.getElementById("couponPhoto");
     const preview = document.getElementById("preview");
     const statusBox = document.getElementById("status");
@@ -422,8 +482,11 @@
 
     let coupons = loadCoupons();
 
+    initializeNeo4jFields();
     updateKeyStatus();
+    updateNeo4jStatus();
     renderCoupons();
+    loadNeo4jCoupons();
 
     saveKeyButton.addEventListener("click", () => {
       const key = apiKeyInput.value.trim();
@@ -443,6 +506,30 @@
       apiKeyInput.value = "";
       updateKeyStatus();
       setStatus("API key cleared from this browser.");
+    });
+
+    saveNeo4jButton.addEventListener("click", async () => {
+      const settings = getNeo4jSettingsFromInputs();
+      if (!settings.uri || !settings.username || !settings.password) {
+        setStatus("Enter the Neo4j URI, username, and password before saving.", true);
+        return;
+      }
+
+      localStorage.setItem(NEO4J_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+      neo4jPasswordInput.value = "";
+      initializeNeo4jFields();
+      updateNeo4jStatus();
+      setStatus("Neo4j settings saved in this browser.");
+      await loadNeo4jCoupons();
+    });
+
+    loadNeo4jButton.addEventListener("click", loadNeo4jCoupons);
+
+    clearNeo4jButton.addEventListener("click", () => {
+      localStorage.removeItem(NEO4J_SETTINGS_STORAGE_KEY);
+      initializeNeo4jFields();
+      updateNeo4jStatus();
+      setStatus("Neo4j settings cleared from this browser.");
     });
 
     photoInput.addEventListener("change", () => {
@@ -493,9 +580,13 @@
         saveCoupons();
         renderCoupons();
         form.reset();
+        initializeNeo4jFields();
+        updateKeyStatus();
+        updateNeo4jStatus();
         preview.style.display = "none";
         preview.removeAttribute("src");
-        setStatus("Coupon saved.");
+        const synced = await saveCouponToNeo4j(savedCoupon);
+        setStatus(synced ? "Coupon saved locally and synced to Neo4j." : "Coupon saved locally. Add Neo4j settings to sync future coupons.");
       } catch (error) {
         setStatus(error.message || "Could not read the coupon. Try a clearer photo.", true);
       } finally {
@@ -513,15 +604,120 @@
       setStatus("All coupons cleared.");
     });
 
-    couponList.addEventListener("click", (event) => {
+    couponList.addEventListener("click", async (event) => {
       const button = event.target.closest("[data-delete-id]");
       if (!button) return;
 
+      const coupon = coupons.find((item) => item.id === button.dataset.deleteId);
       coupons = coupons.filter((coupon) => coupon.id !== button.dataset.deleteId);
       saveCoupons();
       renderCoupons();
+      if (coupon?.neo4jElementId) {
+        await deleteCouponFromNeo4j(coupon.neo4jElementId);
+      }
       setStatus("Coupon removed.");
     });
+
+    async function loadNeo4jCoupons() {
+      const settings = getSavedNeo4jSettings();
+      if (!settings) {
+        return;
+      }
+
+      const driver = createNeo4jDriver(settings);
+      if (!driver) return;
+
+      const session = driver.session({ defaultAccessMode: neo4j.session.READ });
+      try {
+        neo4jStatus.textContent = "Loading coupons from Neo4j...";
+        const result = await session.run(`
+          MATCH (c:Coupon)
+          RETURN elementId(c) AS id, c
+          ORDER BY c.expiryDate ASC, c.productName ASC
+        `);
+
+        coupons = result.records.map((record) => {
+          const properties = record.get("c").properties;
+          const id = record.get("id");
+          return {
+            id,
+            neo4jElementId: id,
+            storeName: cleanValue(properties.storeName),
+            discountAmount: cleanValue(properties.discountAmount),
+            productName: cleanValue(properties.productName),
+            expiryDate: normalizeDate(properties.expiryDate)
+          };
+        });
+
+        saveCoupons();
+        renderCoupons();
+        neo4jStatus.textContent = `Loaded ${coupons.length} ${coupons.length === 1 ? "coupon" : "coupons"} from Neo4j.`;
+      } catch (error) {
+        neo4jStatus.textContent = "Could not load coupons from Neo4j.";
+        setStatus(error.message || "Could not load coupons from Neo4j.", true);
+      } finally {
+        await session.close();
+        await driver.close();
+      }
+    }
+
+    async function saveCouponToNeo4j(coupon) {
+      const settings = getSavedNeo4jSettings();
+      if (!settings) {
+        neo4jStatus.textContent = "Neo4j not saved. Coupon saved locally only.";
+        return false;
+      }
+
+      const driver = createNeo4jDriver(settings);
+      if (!driver) return false;
+
+      const session = driver.session({ defaultAccessMode: neo4j.session.WRITE });
+      try {
+        const result = await session.run(`
+          CREATE (c:Coupon {
+            storeName: $storeName,
+            discountAmount: $discountAmount,
+            productName: $productName,
+            expiryDate: $expiryDate
+          })
+          RETURN elementId(c) AS id
+        `, {
+          storeName: coupon.storeName,
+          discountAmount: coupon.discountAmount,
+          productName: coupon.productName,
+          expiryDate: coupon.expiryDate
+        });
+
+        coupon.neo4jElementId = result.records[0]?.get("id") || "";
+        coupon.id = coupon.neo4jElementId || coupon.id;
+        saveCoupons();
+        renderCoupons();
+        neo4jStatus.textContent = "Coupon synced to Neo4j.";
+        return true;
+      } finally {
+        await session.close();
+        await driver.close();
+      }
+    }
+
+    async function deleteCouponFromNeo4j(neo4jElementId) {
+      const settings = getSavedNeo4jSettings();
+      if (!settings) return;
+
+      const driver = createNeo4jDriver(settings);
+      if (!driver) return;
+
+      const session = driver.session({ defaultAccessMode: neo4j.session.WRITE });
+      try {
+        await session.run("MATCH (c:Coupon) WHERE elementId(c) = $id DELETE c", { id: neo4jElementId });
+        neo4jStatus.textContent = "Coupon deleted from Neo4j.";
+      } catch (error) {
+        setStatus(error.message || "Could not delete coupon from Neo4j.", true);
+      } finally {
+        await session.close();
+        await driver.close();
+      }
+    }
 
     async function extractCoupon(imageDataUrl, apiKey) {
       const response = await fetch("https://api.openai.com/v1/responses", {
@@ -654,6 +850,13 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(coupons));
     }
 
+    function initializeNeo4jFields() {
+      const settings = getSavedNeo4jSettings();
+      neo4jUriInput.value = settings?.uri || NEO4J_URI_DEFAULT;
+      neo4jUsernameInput.value = settings?.username || NEO4J_USERNAME_DEFAULT;
+      neo4jPasswordInput.value = "";
+    }
+
     function getApiKey() {
       return apiKeyInput.value.trim() || localStorage.getItem(API_KEY_STORAGE_KEY) || "";
     }
@@ -662,6 +865,42 @@
       const savedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
       keyStatus.textContent = savedKey ? "API key saved in this browser." : "No API key saved.";
       clearKeyButton.disabled = !savedKey;
+    }
+
+    function getNeo4jSettingsFromInputs() {
+      const saved = getSavedNeo4jSettings();
+      return {
+        uri: neo4jUriInput.value.trim(),
+        username: neo4jUsernameInput.value.trim(),
+        password: neo4jPasswordInput.value.trim() || saved?.password || ""
+      };
+    }
+
+    function getSavedNeo4jSettings() {
+      try {
+        const settings = JSON.parse(localStorage.getItem(NEO4J_SETTINGS_STORAGE_KEY) || "null");
+        if (!settings?.uri || !settings?.username || !settings?.password) {
+          return null;
+        }
+        return settings;
+      } catch {
+        return null;
+      }
+    }
+
+    function updateNeo4jStatus() {
+      const settings = getSavedNeo4jSettings();
+      neo4jStatus.textContent = settings ? "Neo4j settings saved in this browser." : "Neo4j is not connected.";
+      clearNeo4jButton.disabled = !settings;
+    }
+
+    function createNeo4jDriver(settings) {
+      if (!window.neo4j) {
+        setStatus("Neo4j driver did not load. Check your internet connection and refresh.", true);
+        return null;
+      }
+
+      return neo4j.driver(settings.uri, neo4j.auth.basic(settings.username, settings.password));
     }
 
     function setStatus(message, isError = false) {
