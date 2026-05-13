@@ -126,6 +126,34 @@
       color: var(--ink);
     }
 
+    input[type="password"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    .key-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .key-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 32px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
     .preview {
       display: none;
       width: 100%;
@@ -159,6 +187,16 @@
       border: 1px solid var(--line);
       background: #ffffff;
       color: var(--morrisons-green);
+    }
+
+    .link-button {
+      min-height: auto;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--morrisons-green);
+      text-decoration: underline;
     }
 
     button:disabled {
@@ -313,6 +351,10 @@
       .details {
         grid-template-columns: 1fr;
       }
+
+      .key-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -327,7 +369,17 @@
       <form class="panel" id="couponForm">
         <h2>Add a coupon</h2>
         <p class="hint">Upload a clear photo and the app will read the coupon details for you.</p>
-        <p class="key-warning">This single-file version calls OpenAI from your browser. Only use it privately, because a browser API key can be viewed by anyone with access to the file.</p>
+        <p class="key-warning">Your OpenAI API key is saved only in this browser on this device. It is not stored in the website file or uploaded anywhere except OpenAI when reading a coupon.</p>
+
+        <label for="apiKeyInput">OpenAI API key</label>
+        <div class="key-row">
+          <input id="apiKeyInput" type="password" autocomplete="off" placeholder="sk-...">
+          <button id="saveKeyButton" class="secondary" type="button">Save key</button>
+        </div>
+        <div class="key-tools">
+          <span id="keyStatus">No API key saved.</span>
+          <button id="clearKeyButton" class="link-button" type="button">Clear key</button>
+        </div>
 
         <label for="couponPhoto">Coupon photo</label>
         <input id="couponPhoto" type="file" accept="image/*">
@@ -351,11 +403,15 @@
   </main>
 
   <script>
-    const OPENAI_API_KEY = "PASTE_YOUR_OPENAI_API_KEY_HERE";
     const OPENAI_MODEL = "gpt-4.1-mini";
     const STORAGE_KEY = "morrisonsCoupons";
+    const API_KEY_STORAGE_KEY = "morrisonsOpenAiApiKey";
 
     const form = document.getElementById("couponForm");
+    const apiKeyInput = document.getElementById("apiKeyInput");
+    const saveKeyButton = document.getElementById("saveKeyButton");
+    const clearKeyButton = document.getElementById("clearKeyButton");
+    const keyStatus = document.getElementById("keyStatus");
     const photoInput = document.getElementById("couponPhoto");
     const preview = document.getElementById("preview");
     const statusBox = document.getElementById("status");
@@ -366,7 +422,28 @@
 
     let coupons = loadCoupons();
 
+    updateKeyStatus();
     renderCoupons();
+
+    saveKeyButton.addEventListener("click", () => {
+      const key = apiKeyInput.value.trim();
+      if (!key) {
+        setStatus("Enter an OpenAI API key before saving.", true);
+        return;
+      }
+
+      localStorage.setItem(API_KEY_STORAGE_KEY, key);
+      apiKeyInput.value = "";
+      updateKeyStatus();
+      setStatus("API key saved in this browser.");
+    });
+
+    clearKeyButton.addEventListener("click", () => {
+      localStorage.removeItem(API_KEY_STORAGE_KEY);
+      apiKeyInput.value = "";
+      updateKeyStatus();
+      setStatus("API key cleared from this browser.");
+    });
 
     photoInput.addEventListener("change", () => {
       const file = photoInput.files[0];
@@ -391,8 +468,9 @@
         return;
       }
 
-      if (!OPENAI_API_KEY || OPENAI_API_KEY === "PASTE_YOUR_OPENAI_API_KEY_HERE") {
-        setStatus("Add your OpenAI API key at the top of this file before scanning.", true);
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        setStatus("Enter and save your OpenAI API key before scanning.", true);
         return;
       }
 
@@ -401,7 +479,7 @@
         setStatus("Reading coupon photo...");
 
         const imageDataUrl = await resizeImage(file);
-        const coupon = await extractCoupon(imageDataUrl);
+        const coupon = await extractCoupon(imageDataUrl, apiKey);
         const savedCoupon = {
           id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
           storeName: cleanValue(coupon.storeName),
@@ -445,12 +523,12 @@
       setStatus("Coupon removed.");
     });
 
-    async function extractCoupon(imageDataUrl) {
+    async function extractCoupon(imageDataUrl, apiKey) {
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${OPENAI_API_KEY}`
+          "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: OPENAI_MODEL,
@@ -574,6 +652,16 @@
 
     function saveCoupons() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(coupons));
+    }
+
+    function getApiKey() {
+      return apiKeyInput.value.trim() || localStorage.getItem(API_KEY_STORAGE_KEY) || "";
+    }
+
+    function updateKeyStatus() {
+      const savedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+      keyStatus.textContent = savedKey ? "API key saved in this browser." : "No API key saved.";
+      clearKeyButton.disabled = !savedKey;
     }
 
     function setStatus(message, isError = false) {
