@@ -1,298 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>My Morrisons Coupons</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root{--g:#064F35;--gl:#0a7a54;--gold:#FFD700;--gold2:#ffe066;--ink:#1a1f25;--mut:#6b7a8d;--surf:rgba(255,255,255,.72);--bg:#f0f4f1;--ln:rgba(6,79,53,.12);--red:#d32f2f;--r:14px;--sh:0 8px 32px rgba(6,79,53,.1)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);min-height:100vh;background:var(--bg);background-image:radial-gradient(ellipse 120% 80% at 50% -20%,rgba(255,215,0,.2),transparent 60%)}
-.app{max-width:1200px;margin:0 auto;padding:28px 20px 60px}
-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:12px}
-.logo-icon{width:44px;height:44px;background:var(--g);border-radius:12px;display:grid;place-items:center;font-size:22px;box-shadow:0 4px 14px rgba(6,79,53,.25)}
-h1{font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:800;color:var(--g);letter-spacing:-.03em}
-.badge{padding:6px 14px;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--g);font-weight:700;font-size:.78rem;box-shadow:0 2px 10px rgba(255,215,0,.3)}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>My Morrisons Coupons</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --g: #064F35;
+            --gl: #0a7a54;
+            --gold: #FFD700;
+            --gold2: #ffe066;
+            --ink: #1a1f25;
+            --mut: #6b7a8d;
+            --surf: rgba(255, 255, 255, .72);
+            --bg: #f0f4f1;
+            --ln: rgba(6, 79, 53, .12);
+            --red: #d32f2f;
+            --r: 14px;
+            --sh: 0 8px 32px rgba(6, 79, 53, .1)
+        }
 
-/* Search */
-.search-wrap{position:relative;margin-bottom:20px}
-.search-wrap input{width:100%;height:50px;padding:0 48px 0 44px;border:1.5px solid var(--ln);border-radius:var(--r);background:var(--surf);backdrop-filter:blur(12px);font:inherit;font-size:.92rem;color:var(--ink);transition:border .2s,box-shadow .2s}
-.search-wrap input:focus{outline:none;border-color:var(--gl);box-shadow:0 0 0 3px rgba(6,79,53,.1)}
-.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1rem;opacity:.5}
-.ai-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);height:36px;padding:0 14px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--g),var(--gl));color:#fff;font:inherit;font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:opacity .2s}
-.ai-btn:hover{opacity:.9}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
 
-/* Stats */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px}
-.stat{padding:16px 18px;border-radius:var(--r);background:var(--surf);backdrop-filter:blur(12px);border:1px solid var(--ln);box-shadow:var(--sh);transition:transform .2s}
-.stat:hover{transform:translateY(-2px)}
-.stat-val{font-size:1.5rem;font-weight:800;color:var(--g);line-height:1}
-.stat-label{font-size:.72rem;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            background: var(--bg);
+            background-image: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 215, 0, .2), transparent 60%)
+        }
 
-/* Layout */
-.layout{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start}
-.glass{background:var(--surf);backdrop-filter:blur(16px);border:1px solid var(--ln);border-radius:var(--r);box-shadow:var(--sh);padding:22px;transition:box-shadow .3s}
-h2{font-size:1.15rem;font-weight:700;color:var(--g);margin-bottom:4px;letter-spacing:-.02em}
-.sub{color:var(--mut);font-size:.82rem;margin-bottom:16px}
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 28px 20px 60px
+        }
 
-/* Settings */
-.stg{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--ln)}
-.stg h3{font-size:.78rem;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.stg h3::before{content:"";width:3px;height:12px;border-radius:2px;background:linear-gradient(var(--gold),var(--g))}
-.info{padding:10px 12px;border-radius:8px;background:linear-gradient(135deg,#fffce6,#fff9d0);border-left:3px solid var(--gold);color:#6b5900;font-size:.78rem;line-height:1.4;margin-bottom:10px}
-label{display:block;font-size:.72rem;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
-input[type="password"],input[type="text"]{width:100%;height:40px;padding:0 12px;border:1.5px solid var(--ln);border-radius:8px;background:rgba(255,255,255,.8);color:var(--ink);font:inherit;font-size:.85rem;transition:border .2s,box-shadow .2s}
-input:focus{outline:none;border-color:var(--gl);box-shadow:0 0 0 3px rgba(6,79,53,.1)}
-.kr{display:flex;gap:6px;margin-bottom:4px}
-.kr input{flex:1}
-.ks{display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:var(--mut);min-height:24px}
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap
+        }
 
-/* File */
-.fdrop{position:relative;border:2px dashed var(--ln);border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:border .2s,background .2s;background:rgba(255,255,255,.4)}
-.fdrop:hover{border-color:var(--gl);background:rgba(6,79,53,.03)}
-.fdrop input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.fdrop-lbl{font-size:.82rem;color:var(--mut)}
-.fdrop-lbl strong{color:var(--g)}
-.preview{display:none;width:100%;max-height:180px;margin-top:12px;object-fit:contain;border-radius:8px;border:1px solid var(--ln)}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
 
-/* Buttons */
-button{height:40px;border:0;border-radius:8px;padding:0 16px;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
-.bp{background:linear-gradient(135deg,var(--g),var(--gl));color:#fff;box-shadow:0 4px 14px rgba(6,79,53,.2)}
-.bp:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(6,79,53,.25)}
-.bs{background:#fff;color:var(--g);border:1.5px solid var(--ln)}
-.bs:hover{background:rgba(6,79,53,.04);border-color:var(--gl)}
-.bl{height:auto;padding:0;background:0;color:var(--g);text-decoration:underline;font-size:.75rem}
-button:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
-.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.status{min-height:18px;margin-top:10px;font-size:.78rem;color:var(--mut);transition:color .2s}
-.status.error{color:var(--red);font-weight:600}
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--g);
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            box-shadow: 0 4px 14px rgba(6, 79, 53, .25)
+        }
 
-/* Calendar */
-.cal{margin-top:16px}
-.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.cal-head span{font-size:.88rem;font-weight:700;color:var(--g)}
-.cal-nav{height:30px;width:30px;border-radius:8px;padding:0;display:grid;place-items:center;font-size:.8rem}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
-.cal-day{font-size:.65rem;font-weight:600;color:var(--mut);padding:4px 0;text-transform:uppercase}
-.cal-cell{position:relative;padding:6px 0;font-size:.78rem;border-radius:6px;cursor:default;transition:background .15s}
-.cal-cell.today{background:rgba(6,79,53,.08);font-weight:700;color:var(--g)}
-.cal-cell.has-coupon{font-weight:700;color:var(--g)}
-.cal-cell.has-coupon::after{content:"";position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold)}
-.cal-cell.expiring-day{background:rgba(211,47,47,.08);color:var(--red)}
-.cal-cell.expiring-day::after{background:var(--red)}
-.cal-cell.other{color:#ccc}
+        h1 {
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 800;
+            color: var(--g);
+            letter-spacing: -.03em
+        }
 
-/* Groups */
-.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.tab{height:34px;padding:0 14px;border-radius:999px;font-size:.78rem;font-weight:600;background:rgba(255,255,255,.7);border:1.5px solid var(--ln);color:var(--mut);cursor:pointer;transition:all .2s;white-space:nowrap}
-.tab.active{background:var(--g);color:#fff;border-color:var(--g);box-shadow:0 3px 12px rgba(6,79,53,.2)}
-.tab .tc{font-size:.7rem;opacity:.7;margin-left:3px}
-.list-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.cnt{padding:5px 12px;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--g);font-weight:700;font-size:.78rem}
-.coupon-list{display:grid;gap:12px}
-.coupon{position:relative;overflow:hidden;padding:18px;border-radius:var(--r);background:var(--surf);backdrop-filter:blur(12px);border:1px solid var(--ln);box-shadow:var(--sh);transition:transform .25s,box-shadow .25s;animation:su .4s ease-out both}
-.coupon:hover{transform:translateY(-2px);box-shadow:0 16px 48px rgba(6,79,53,.12)}
-@keyframes su{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.coupon.expiring{border-color:var(--red);background:rgba(211,47,47,.05)}
-.coupon.expiring::before{content:"⚠ Expiring soon";position:absolute;top:0;right:0;padding:5px 12px;border-bottom-left-radius:8px;background:linear-gradient(135deg,var(--red),#e53935);color:#fff;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
-.coupon.expired{opacity:.55;border-color:#ccc}
-.coupon.expired::before{content:"Expired";position:absolute;top:0;right:0;padding:5px 12px;border-bottom-left-radius:8px;background:#888;color:#fff;font-size:.68rem;font-weight:700;text-transform:uppercase}
-.ct{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding-right:85px}
-.coupon h3{font-size:1rem;font-weight:700;color:var(--g);letter-spacing:-.01em}
-.disc{font-size:1.25rem;font-weight:800;white-space:nowrap;background:linear-gradient(135deg,var(--g),var(--gl));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.dets{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
-.det span{display:block;font-size:.65rem;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
-.det strong{display:block;margin-top:2px;font-size:.85rem;font-weight:600;overflow-wrap:anywhere}
-.ca{display:flex;justify-content:flex-end;margin-top:12px}
-.empty{padding:36px 24px;border:2px dashed var(--ln);border-radius:var(--r);text-align:center;color:var(--mut);line-height:1.5}
-.empty-icon{font-size:2.2rem;margin-bottom:8px;opacity:.6}
+        .badge {
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: var(--g);
+            font-weight: 700;
+            font-size: .78rem;
+            box-shadow: 0 2px 10px rgba(255, 215, 0, .3)
+        }
 
-@media(max-width:800px){
-.layout{grid-template-columns:1fr}
-header{flex-direction:column;align-items:flex-start}
-.ct{flex-direction:column;padding-right:0}
-.coupon.expiring,.coupon.expired{padding-top:36px}
-.dets{grid-template-columns:1fr}
-.kr{flex-direction:column}
-.stats{grid-template-columns:repeat(2,1fr)}
-}
-</style>
+        /* Search */
+        .search-wrap {
+            position: relative;
+            margin-bottom: 20px
+        }
+
+        .search-wrap input {
+            width: 100%;
+            height: 50px;
+            padding: 0 48px 0 44px;
+            border: 1.5px solid var(--ln);
+            border-radius: var(--r);
+            background: var(--surf);
+            backdrop-filter: blur(12px);
+            font: inherit;
+            font-size: .92rem;
+            color: var(--ink);
+            transition: border .2s, box-shadow .2s
+        }
+
+        .search-wrap input:focus {
+            outline: none;
+            border-color: var(--gl);
+            box-shadow: 0 0 0 3px rgba(6, 79, 53, .1)
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            opacity: .5
+        }
+
+        .ai-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 36px;
+            padding: 0 14px;
+            border: 0;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--g), var(--gl));
+            color: #fff;
+            font: inherit;
+            font-size: .78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: opacity .2s
+        }
+
+        .ai-btn:hover {
+            opacity: .9
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 22px
+        }
+
+        .stat {
+            padding: 16px 18px;
+            border-radius: var(--r);
+            background: var(--surf);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--ln);
+            box-shadow: var(--sh);
+            transition: transform .2s
+        }
+
+        .stat:hover {
+            transform: translateY(-2px)
+        }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--g);
+            line-height: 1
+        }
+
+        .stat-label {
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--mut);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-top: 4px
+        }
+
+        /* Layout */
+        .layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 22px;
+            align-items: start
+        }
+
+        .glass {
+            background: var(--surf);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--ln);
+            border-radius: var(--r);
+            box-shadow: var(--sh);
+            padding: 22px;
+            transition: box-shadow .3s
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--g);
+            margin-bottom: 4px;
+            letter-spacing: -.02em
+        }
+
+        .sub {
+            color: var(--mut);
+            font-size: .82rem;
+            margin-bottom: 16px
+        }
+
+        /* Settings */
+        .stg {
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--ln)
+        }
+
+        .stg h3 {
+            font-size: .78rem;
+            font-weight: 700;
+            color: var(--g);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .stg h3::before {
+            content: "";
+            width: 3px;
+            height: 12px;
+            border-radius: 2px;
+            background: linear-gradient(var(--gold), var(--g))
+        }
+
+        .info {
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #fffce6, #fff9d0);
+            border-left: 3px solid var(--gold);
+            color: #6b5900;
+            font-size: .78rem;
+            line-height: 1.4;
+            margin-bottom: 10px
+        }
+
+        label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--mut);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 5px
+        }
+
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1.5px solid var(--ln);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .8);
+            color: var(--ink);
+            font: inherit;
+            font-size: .85rem;
+            transition: border .2s, box-shadow .2s
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--gl);
+            box-shadow: 0 0 0 3px rgba(6, 79, 53, .1)
+        }
+
+        .kr {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 4px
+        }
+
+        .kr input {
+            flex: 1
+        }
+
+        .ks {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: .75rem;
+            color: var(--mut);
+            min-height: 24px
+        }
+
+        /* File */
+        .fdrop {
+            position: relative;
+            border: 2px dashed var(--ln);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border .2s, background .2s;
+            background: rgba(255, 255, 255, .4)
+        }
+
+        .fdrop:hover {
+            border-color: var(--gl);
+            background: rgba(6, 79, 53, .03)
+        }
+
+        .fdrop input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer
+        }
+
+        .fdrop-lbl {
+            font-size: .82rem;
+            color: var(--mut)
+        }
+
+        .fdrop-lbl strong {
+            color: var(--g)
+        }
+
+        .preview {
+            display: none;
+            width: 100%;
+            max-height: 180px;
+            margin-top: 12px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--ln)
+        }
+
+        /* Buttons */
+        button {
+            height: 40px;
+            border: 0;
+            border-radius: 8px;
+            padding: 0 16px;
+            font: inherit;
+            font-size: .82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .bp {
+            background: linear-gradient(135deg, var(--g), var(--gl));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(6, 79, 53, .2)
+        }
+
+        .bp:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(6, 79, 53, .25)
+        }
+
+        .bs {
+            background: #fff;
+            color: var(--g);
+            border: 1.5px solid var(--ln)
+        }
+
+        .bs:hover {
+            background: rgba(6, 79, 53, .04);
+            border-color: var(--gl)
+        }
+
+        .bl {
+            height: auto;
+            padding: 0;
+            background: 0;
+            color: var(--g);
+            text-decoration: underline;
+            font-size: .75rem
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none !important
+        }
+
+        .acts {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px
+        }
+
+        .status {
+            min-height: 18px;
+            margin-top: 10px;
+            font-size: .78rem;
+            color: var(--mut);
+            transition: color .2s
+        }
+
+        .status.error {
+            color: var(--red);
+            font-weight: 600
+        }
+
+        /* Calendar */
+        .cal {
+            margin-top: 16px
+        }
+
+        .cal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px
+        }
+
+        .cal-head span {
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--g)
+        }
+
+        .cal-nav {
+            height: 30px;
+            width: 30px;
+            border-radius: 8px;
+            padding: 0;
+            display: grid;
+            place-items: center;
+            font-size: .8rem
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            text-align: center
+        }
+
+        .cal-day {
+            font-size: .65rem;
+            font-weight: 600;
+            color: var(--mut);
+            padding: 4px 0;
+            text-transform: uppercase
+        }
+
+        .cal-cell {
+            position: relative;
+            padding: 6px 0;
+            font-size: .78rem;
+            border-radius: 6px;
+            cursor: default;
+            transition: background .15s
+        }
+
+        .cal-cell.today {
+            background: rgba(6, 79, 53, .08);
+            font-weight: 700;
+            color: var(--g)
+        }
+
+        .cal-cell.has-coupon {
+            font-weight: 700;
+            color: var(--g)
+        }
+
+        .cal-cell.has-coupon::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--gold)
+        }
+
+        .cal-cell.expiring-day {
+            background: rgba(211, 47, 47, .08);
+            color: var(--red)
+        }
+
+        .cal-cell.expiring-day::after {
+            background: var(--red)
+        }
+
+        .cal-cell.other {
+            color: #ccc
+        }
+
+        /* Groups */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            flex-wrap: wrap
+        }
+
+        .tab {
+            height: 34px;
+            padding: 0 14px;
+            border-radius: 999px;
+            font-size: .78rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, .7);
+            border: 1.5px solid var(--ln);
+            color: var(--mut);
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap
+        }
+
+        .tab.active {
+            background: var(--g);
+            color: #fff;
+            border-color: var(--g);
+            box-shadow: 0 3px 12px rgba(6, 79, 53, .2)
+        }
+
+        .tab .tc {
+            font-size: .7rem;
+            opacity: .7;
+            margin-left: 3px
+        }
+
+        .list-hd {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap
+        }
+
+        .cnt {
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: var(--g);
+            font-weight: 700;
+            font-size: .78rem
+        }
+
+        .coupon-list {
+            display: grid;
+            gap: 12px
+        }
+
+        .coupon {
+            position: relative;
+            overflow: hidden;
+            padding: 18px;
+            border-radius: var(--r);
+            background: var(--surf);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--ln);
+            box-shadow: var(--sh);
+            transition: transform .25s, box-shadow .25s;
+            animation: su .4s ease-out both
+        }
+
+        .coupon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 48px rgba(6, 79, 53, .12)
+        }
+
+        @keyframes su {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .coupon.expiring {
+            border-color: var(--red);
+            background: rgba(211, 47, 47, .05)
+        }
+
+        .coupon.expiring::before {
+            content: "⚠ Expiring soon";
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px 12px;
+            border-bottom-left-radius: 8px;
+            background: linear-gradient(135deg, var(--red), #e53935);
+            color: #fff;
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .03em
+        }
+
+        .coupon.expired {
+            opacity: .55;
+            border-color: #ccc
+        }
+
+        .coupon.expired::before {
+            content: "Expired";
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px 12px;
+            border-bottom-left-radius: 8px;
+            background: #888;
+            color: #fff;
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase
+        }
+
+        .ct {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            padding-right: 85px
+        }
+
+        .coupon h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--g);
+            letter-spacing: -.01em
+        }
+
+        .disc {
+            font-size: 1.25rem;
+            font-weight: 800;
+            white-space: nowrap;
+            background: linear-gradient(135deg, var(--g), var(--gl));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .dets {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px
+        }
+
+        .det span {
+            display: block;
+            font-size: .65rem;
+            font-weight: 600;
+            color: var(--mut);
+            text-transform: uppercase;
+            letter-spacing: .05em
+        }
+
+        .det strong {
+            display: block;
+            margin-top: 2px;
+            font-size: .85rem;
+            font-weight: 600;
+            overflow-wrap: anywhere
+        }
+
+        .ca {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px
+        }
+
+        .empty {
+            padding: 36px 24px;
+            border: 2px dashed var(--ln);
+            border-radius: var(--r);
+            text-align: center;
+            color: var(--mut);
+            line-height: 1.5
+        }
+
+        .empty-icon {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            opacity: .6
+        }
+
+        @media(max-width:800px) {
+            .layout {
+                grid-template-columns: 1fr
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            .ct {
+                flex-direction: column;
+                padding-right: 0
+            }
+
+            .coupon.expiring,
+            .coupon.expired {
+                padding-top: 36px
+            }
+
+            .dets {
+                grid-template-columns: 1fr
+            }
+
+            .kr {
+                flex-direction: column
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+    </style>
 </head>
+
 <body>
-<main class="app">
-<header>
-<div class="logo"><div class="logo-icon"><span>🏷️</span></div><h1>My Morrisons Coupons</h1></div>
-<div class="badge">💾 Saved locally</div>
-</header>
+    <main class="app">
+        <header>
+            <div class="logo">
+                <div class="logo-icon"><span>🏷️</span></div>
+                <h1>My Coupons</h1>
+            </div>
+            <div class="badge">💾 Saved locally</div>
+        </header>
 
-<div class="search-wrap">
-<span class="search-icon">🔍</span>
-<input id="searchInput" type="text" placeholder="Search coupons... try 'fuel discounts' or 'expiring this week'">
-<button class="ai-btn" id="aiSearchBtn" type="button">✨ AI Search</button>
-</div>
+        <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input id="searchInput" type="text"
+                placeholder="Search coupons... try 'fuel discounts' or 'expiring this week'">
+            <button class="ai-btn" id="aiSearchBtn" type="button">✨ AI Search</button>
+        </div>
 
-<div class="stats" id="statsRow">
-<div class="stat"><div class="stat-val" id="statTotal">0</div><div class="stat-label">Total Coupons</div></div>
-<div class="stat"><div class="stat-val" id="statExpiring">0</div><div class="stat-label">Expiring Soon</div></div>
-<div class="stat"><div class="stat-val" id="statStores">0</div><div class="stat-label">Stores</div></div>
-<div class="stat"><div class="stat-val" id="statSavings">—</div><div class="stat-label">Potential Savings</div></div>
-</div>
+        <div class="stats" id="statsRow">
+            <div class="stat">
+                <div class="stat-val" id="statTotal">0</div>
+                <div class="stat-label">Total Coupons</div>
+            </div>
+            <div class="stat">
+                <div class="stat-val" id="statExpiring">0</div>
+                <div class="stat-label">Expiring Soon</div>
+            </div>
+            <div class="stat">
+                <div class="stat-val" id="statStores">0</div>
+                <div class="stat-label">Stores</div>
+            </div>
+            <div class="stat">
+                <div class="stat-val" id="statSavings">—</div>
+                <div class="stat-label">Potential Savings</div>
+            </div>
+        </div>
 
-<section class="layout">
-<div>
-<form class="glass" id="couponForm">
-<h2>Add a coupon</h2>
-<p class="sub">Upload a photo — AI reads it for you.</p>
-<div class="stg">
-<h3>OpenAI Settings</h3>
-<div class="info">Your API key is stored only in this browser.</div>
-<label for="apiKeyInput">API Key</label>
-<div class="kr"><input id="apiKeyInput" type="password" autocomplete="off" placeholder="sk-..."><button id="saveKeyButton" class="bs" type="button">Save</button></div>
-<div class="ks"><span id="keyStatus">No key saved.</span><button id="clearKeyButton" class="bl" type="button">Clear</button></div>
-</div>
-<label for="couponPhoto">Coupon Photo</label>
-<div class="fdrop"><input id="couponPhoto" type="file" accept="image/*"><div class="fdrop-lbl"><strong>Choose file</strong> or drag here</div></div>
-<img id="preview" class="preview" alt="Preview">
-<div class="acts"><button id="scanButton" class="bp" type="submit">✨ Read coupon</button><button id="clearAllButton" class="bs" type="button">Clear all</button></div>
-<div id="status" class="status" role="status"></div>
-</form>
+        <section class="layout">
+            <div>
+                <form class="glass" id="couponForm">
+                    <h2>Add a coupon</h2>
+                    <p class="sub">Upload a photo — AI reads it for you.</p>
+                    <div class="stg">
+                        <h3>OpenAI Settings</h3>
+                        <div class="info">Your API key is stored only in this browser.</div>
+                        <label for="apiKeyInput">API Key</label>
+                        <div class="kr"><input id="apiKeyInput" type="password" autocomplete="off"
+                                placeholder="sk-..."><button id="saveKeyButton" class="bs" type="button">Save</button>
+                        </div>
+                        <div class="ks"><span id="keyStatus">No key saved.</span><button id="clearKeyButton" class="bl"
+                                type="button">Clear</button></div>
+                    </div>
+                    <label for="couponPhoto">Coupon Photo</label>
+                    <div class="fdrop"><input id="couponPhoto" type="file" accept="image/*">
+                        <div class="fdrop-lbl"><strong>Choose file</strong> or drag here</div>
+                    </div>
+                    <img id="preview" class="preview" alt="Preview">
+                    <div class="acts"><button id="scanButton" class="bp" type="submit">✨ Read coupon</button><button
+                            id="clearAllButton" class="bs" type="button">Clear all</button></div>
+                    <div id="status" class="status" role="status"></div>
+                </form>
 
-<div class="glass cal" id="calendarWidget">
-<h2>📅 Expiry Calendar</h2>
-<div class="cal-head"><button class="bs cal-nav" id="calPrev" type="button">‹</button><span id="calTitle"></span><button class="bs cal-nav" id="calNext" type="button">›</button></div>
-<div class="cal-grid" id="calGrid"></div>
-</div>
-</div>
+                <div class="glass cal" id="calendarWidget">
+                    <h2>📅 Expiry Calendar</h2>
+                    <div class="cal-head"><button class="bs cal-nav" id="calPrev" type="button">‹</button><span
+                            id="calTitle"></span><button class="bs cal-nav" id="calNext" type="button">›</button></div>
+                    <div class="cal-grid" id="calGrid"></div>
+                </div>
+            </div>
 
-<section>
-<div class="list-hd"><h2>Saved coupons</h2><div id="couponCount" class="cnt">0</div></div>
-<div class="tabs" id="groupTabs"></div>
-<div id="couponList" class="coupon-list"></div>
-</section>
-</section>
-</main>
-<script>
-const OPENAI_MODEL="gpt-4.1-mini",STORAGE_KEY="morrisonsCoupons",API_KEY_KEY="morrisonsOpenAiApiKey";
-const $=id=>document.getElementById(id);
-const form=$("couponForm"),apiKeyInput=$("apiKeyInput"),saveKeyBtn=$("saveKeyButton"),clearKeyBtn=$("clearKeyButton"),keyStatus=$("keyStatus"),photoInput=$("couponPhoto"),preview=$("preview"),statusBox=$("status"),scanBtn=$("scanButton"),clearAllBtn=$("clearAllButton"),couponList=$("couponList"),couponCount=$("couponCount"),searchInput=$("searchInput"),aiSearchBtn=$("aiSearchBtn"),groupTabs=$("groupTabs"),calGrid=$("calGrid"),calTitle=$("calTitle"),calPrev=$("calPrev"),calNext=$("calNext");
+            <section>
+                <div class="list-hd">
+                    <h2>Saved coupons</h2>
+                    <div id="couponCount" class="cnt">0</div>
+                </div>
+                <div class="tabs" id="groupTabs"></div>
+                <div id="couponList" class="coupon-list"></div>
+            </section>
+        </section>
+    </main>
+    <script>
+        const OPENAI_MODEL = "gpt-4.1-mini", STORAGE_KEY = "morrisonsCoupons", API_KEY_KEY = "morrisonsOpenAiApiKey";
+        const $ = id => document.getElementById(id);
+        const form = $("couponForm"), apiKeyInput = $("apiKeyInput"), saveKeyBtn = $("saveKeyButton"), clearKeyBtn = $("clearKeyButton"), keyStatus = $("keyStatus"), photoInput = $("couponPhoto"), preview = $("preview"), statusBox = $("status"), scanBtn = $("scanButton"), clearAllBtn = $("clearAllButton"), couponList = $("couponList"), couponCount = $("couponCount"), searchInput = $("searchInput"), aiSearchBtn = $("aiSearchBtn"), groupTabs = $("groupTabs"), calGrid = $("calGrid"), calTitle = $("calTitle"), calPrev = $("calPrev"), calNext = $("calNext");
 
-let coupons=loadCoupons(),activeGroup="all",calMonth=new Date().getMonth(),calYear=new Date().getFullYear(),searchResults=null;
-updateKeyStatus();renderAll();
+        let coupons = loadCoupons(), activeGroup = "all", calMonth = new Date().getMonth(), calYear = new Date().getFullYear(), searchResults = null;
+        updateKeyStatus(); renderAll();
 
-// ── Key management ──
-saveKeyBtn.onclick=()=>{const k=apiKeyInput.value.trim();if(!k){setStatus("Enter a key first.",true);return;}localStorage.setItem(API_KEY_KEY,k);apiKeyInput.value="";updateKeyStatus();setStatus("Key saved ✓");};
-clearKeyBtn.onclick=()=>{localStorage.removeItem(API_KEY_KEY);apiKeyInput.value="";updateKeyStatus();setStatus("Key cleared.");};
-function getApiKey(){return apiKeyInput.value.trim()||localStorage.getItem(API_KEY_KEY)||"";}
-function updateKeyStatus(){const k=localStorage.getItem(API_KEY_KEY);keyStatus.textContent=k?"✓ Key saved.":"No key saved.";clearKeyBtn.disabled=!k;}
+        // ── Key management ──
+        saveKeyBtn.onclick = () => { const k = apiKeyInput.value.trim(); if (!k) { setStatus("Enter a key first.", true); return; } localStorage.setItem(API_KEY_KEY, k); apiKeyInput.value = ""; updateKeyStatus(); setStatus("Key saved ✓"); };
+        clearKeyBtn.onclick = () => { localStorage.removeItem(API_KEY_KEY); apiKeyInput.value = ""; updateKeyStatus(); setStatus("Key cleared."); };
+        function getApiKey() { return apiKeyInput.value.trim() || localStorage.getItem(API_KEY_KEY) || ""; }
+        function updateKeyStatus() { const k = localStorage.getItem(API_KEY_KEY); keyStatus.textContent = k ? "✓ Key saved." : "No key saved."; clearKeyBtn.disabled = !k; }
 
-// ── Photo preview ──
-photoInput.onchange=()=>{const f=photoInput.files[0];setStatus("");if(!f){preview.style.display="none";preview.removeAttribute("src");return;}preview.src=URL.createObjectURL(f);preview.style.display="block";};
+        // ── Photo preview ──
+        photoInput.onchange = () => { const f = photoInput.files[0]; setStatus(""); if (!f) { preview.style.display = "none"; preview.removeAttribute("src"); return; } preview.src = URL.createObjectURL(f); preview.style.display = "block"; };
 
-// ── Scan coupon ──
-form.onsubmit=async e=>{e.preventDefault();const f=photoInput.files[0];if(!f){setStatus("Choose a photo first.",true);return;}const k=getApiKey();if(!k){setStatus("Save your API key first.",true);return;}
-try{scanBtn.disabled=true;setStatus("Reading coupon…");const url=await resizeImg(f),c=await extractCoupon(url,k);
-const s={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),storeName:cl(c.storeName),discountAmount:cl(c.discountAmount),productName:cl(c.productName),expiryDate:normDate(c.expiryDate),createdAt:new Date().toISOString()};
-coupons.unshift(s);saveCoupons();renderAll();form.reset();updateKeyStatus();preview.style.display="none";preview.removeAttribute("src");setStatus("Coupon saved ✓");}catch(err){setStatus(err.message||"Could not read coupon.",true);}finally{scanBtn.disabled=false;}};
+        // ── Scan coupon ──
+        form.onsubmit = async e => {
+            e.preventDefault(); const f = photoInput.files[0]; if (!f) { setStatus("Choose a photo first.", true); return; } const k = getApiKey(); if (!k) { setStatus("Save your API key first.", true); return; }
+            try {
+                scanBtn.disabled = true; setStatus("Reading coupon…"); const url = await resizeImg(f), c = await extractCoupon(url, k);
+                const s = { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), storeName: cl(c.storeName), discountAmount: cl(c.discountAmount), productName: cl(c.productName), expiryDate: normDate(c.expiryDate), createdAt: new Date().toISOString() };
+                coupons.unshift(s); saveCoupons(); renderAll(); form.reset(); updateKeyStatus(); preview.style.display = "none"; preview.removeAttribute("src"); setStatus("Coupon saved ✓");
+            } catch (err) { setStatus(err.message || "Could not read coupon.", true); } finally { scanBtn.disabled = false; }
+        };
 
-clearAllBtn.onclick=()=>{if(!coupons.length||!confirm("Clear all coupons?"))return;coupons=[];saveCoupons();renderAll();setStatus("All cleared.");};
-couponList.onclick=e=>{const b=e.target.closest("[data-del]");if(!b)return;coupons=coupons.filter(c=>c.id!==b.dataset.del);saveCoupons();renderAll();setStatus("Removed.");};
+        clearAllBtn.onclick = () => { if (!coupons.length || !confirm("Clear all coupons?")) return; coupons = []; saveCoupons(); renderAll(); setStatus("All cleared."); };
+        couponList.onclick = e => { const b = e.target.closest("[data-del]"); if (!b) return; coupons = coupons.filter(c => c.id !== b.dataset.del); saveCoupons(); renderAll(); setStatus("Removed."); };
 
-// ── Search ──
-let searchTimer;
-searchInput.oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{const q=searchInput.value.trim().toLowerCase();if(!q){searchResults=null;renderAll();return;}searchResults=coupons.filter(c=>[c.productName,c.storeName,c.discountAmount,c.expiryDate].join(" ").toLowerCase().includes(q));renderCoupons();updateStats();},200);};
+        // ── Search ──
+        let searchTimer;
+        searchInput.oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { const q = searchInput.value.trim().toLowerCase(); if (!q) { searchResults = null; renderAll(); return; } searchResults = coupons.filter(c => [c.productName, c.storeName, c.discountAmount, c.expiryDate].join(" ").toLowerCase().includes(q)); renderCoupons(); updateStats(); }, 200); };
 
-aiSearchBtn.onclick=async()=>{const q=searchInput.value.trim(),k=getApiKey();if(!q){setStatus("Type a search query first.",true);return;}if(!k){setStatus("Save your API key for AI search.",true);return;}if(!coupons.length){setStatus("No coupons to search.",true);return;}
-try{aiSearchBtn.disabled=true;setStatus("AI searching…");
-const list=coupons.map((c,i)=>`${i}:${c.productName}|${c.storeName}|${c.discountAmount}|${c.expiryDate}`).join("\n");
-const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+k},
-body:JSON.stringify({model:OPENAI_MODEL,input:[{role:"user",content:[{type:"input_text",text:`Given these coupons (index:product|store|discount|expiry):\n${list}\n\nUser query: "${q}"\n\nReturn a JSON array of matching coupon indices. Today is ${new Date().toISOString().slice(0,10)}. Example: [0,2,5]. If none match, return [].`}]}],
-text:{format:{type:"json_schema",name:"search_results",schema:{type:"object",additionalProperties:false,properties:{indices:{type:"array",items:{type:"integer"}}},required:["indices"]},strict:true}}})});
-if(!r.ok)throw new Error("AI search failed: "+r.status);
-const d=await r.json(),txt=d.output_text||d.output?.[0]?.content?.find(i=>i.type==="output_text")?.text;
-const parsed=JSON.parse(txt);searchResults=parsed.indices.map(i=>coupons[i]).filter(Boolean);
-renderCoupons();updateStats();setStatus(`AI found ${searchResults.length} result(s).`);}catch(err){setStatus(err.message,true);}finally{aiSearchBtn.disabled=false;}};
+        aiSearchBtn.onclick = async () => {
+            const q = searchInput.value.trim(), k = getApiKey(); if (!q) { setStatus("Type a search query first.", true); return; } if (!k) { setStatus("Save your API key for AI search.", true); return; } if (!coupons.length) { setStatus("No coupons to search.", true); return; }
+            try {
+                aiSearchBtn.disabled = true; setStatus("AI searching…");
+                const list = coupons.map((c, i) => `${i}:${c.productName}|${c.storeName}|${c.discountAmount}|${c.expiryDate}`).join("\n");
+                const r = await fetch("https://api.openai.com/v1/responses", {
+                    method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
+                    body: JSON.stringify({
+                        model: OPENAI_MODEL, input: [{ role: "user", content: [{ type: "input_text", text: `Given these coupons (index:product|store|discount|expiry):\n${list}\n\nUser query: "${q}"\n\nReturn a JSON array of matching coupon indices. Today is ${new Date().toISOString().slice(0, 10)}. Example: [0,2,5]. If none match, return [].` }] }],
+                        text: { format: { type: "json_schema", name: "search_results", schema: { type: "object", additionalProperties: false, properties: { indices: { type: "array", items: { type: "integer" } } }, required: ["indices"] }, strict: true } }
+                    })
+                });
+                if (!r.ok) throw new Error("AI search failed: " + r.status);
+                const d = await r.json(), txt = d.output_text || d.output?.[0]?.content?.find(i => i.type === "output_text")?.text;
+                const parsed = JSON.parse(txt); searchResults = parsed.indices.map(i => coupons[i]).filter(Boolean);
+                renderCoupons(); updateStats(); setStatus(`AI found ${searchResults.length} result(s).`);
+            } catch (err) { setStatus(err.message, true); } finally { aiSearchBtn.disabled = false; }
+        };
 
-// ── Grouping ──
-function getGroups(){const groups={all:coupons};const today=new Date();today.setHours(0,0,0,0);
-const stores={};coupons.forEach(c=>{const s=c.storeName||"Other";if(!stores[s])stores[s]=[];stores[s].push(c);
-const exp=parseDate(c.expiryDate),diff=exp?Math.ceil((exp-today)/864e5):null;
-if(diff!==null&&diff<0){if(!groups["Expired"])groups["Expired"]=[];groups["Expired"].push(c);}
-else if(diff!==null&&diff<=3){if(!groups["Expiring Soon"])groups["Expiring Soon"]=[];groups["Expiring Soon"].push(c);}
-else if(diff!==null&&diff<=7){if(!groups["This Week"])groups["This Week"]=[];groups["This Week"].push(c);}
-else if(diff!==null&&diff<=30){if(!groups["This Month"])groups["This Month"]=[];groups["This Month"].push(c);}
-});Object.keys(stores).forEach(s=>{if(stores[s].length>0)groups[s]=stores[s];});return groups;}
+        // ── Grouping ──
+        function getGroups() {
+            const groups = { all: coupons }; const today = new Date(); today.setHours(0, 0, 0, 0);
+            const stores = {}; coupons.forEach(c => {
+                const s = c.storeName || "Other"; if (!stores[s]) stores[s] = []; stores[s].push(c);
+                const exp = parseDate(c.expiryDate), diff = exp ? Math.ceil((exp - today) / 864e5) : null;
+                if (diff !== null && diff < 0) { if (!groups["Expired"]) groups["Expired"] = []; groups["Expired"].push(c); }
+                else if (diff !== null && diff <= 3) { if (!groups["Expiring Soon"]) groups["Expiring Soon"] = []; groups["Expiring Soon"].push(c); }
+                else if (diff !== null && diff <= 7) { if (!groups["This Week"]) groups["This Week"] = []; groups["This Week"].push(c); }
+                else if (diff !== null && diff <= 30) { if (!groups["This Month"]) groups["This Month"] = []; groups["This Month"].push(c); }
+            }); Object.keys(stores).forEach(s => { if (stores[s].length > 0) groups[s] = stores[s]; }); return groups;
+        }
 
-function renderTabs(){const g=getGroups(),keys=Object.keys(g);
-groupTabs.innerHTML=keys.map(k=>`<button class="tab ${k===activeGroup?"active":""}" data-grp="${esc(k)}">${esc(k==="all"?"All":k)}<span class="tc">${g[k].length}</span></button>`).join("");
-groupTabs.onclick=e=>{const t=e.target.closest("[data-grp]");if(!t)return;activeGroup=t.dataset.grp;renderTabs();renderCoupons();};}
+        function renderTabs() {
+            const g = getGroups(), keys = Object.keys(g);
+            groupTabs.innerHTML = keys.map(k => `<button class="tab ${k === activeGroup ? "active" : ""}" data-grp="${esc(k)}">${esc(k === "all" ? "All" : k)}<span class="tc">${g[k].length}</span></button>`).join("");
+            groupTabs.onclick = e => { const t = e.target.closest("[data-grp]"); if (!t) return; activeGroup = t.dataset.grp; renderTabs(); renderCoupons(); };
+        }
 
-// ── Calendar ──
-function renderCal(){const d=new Date(calYear,calMonth,1),last=new Date(calYear,calMonth+1,0),startDay=d.getDay()||7;
-calTitle.textContent=d.toLocaleDateString(undefined,{month:"long",year:"numeric"});
-const expiryMap={};coupons.forEach(c=>{const p=parseDate(c.expiryDate);if(p){const k=`${p.getFullYear()}-${p.getMonth()}-${p.getDate()}`;if(!expiryMap[k])expiryMap[k]=[];expiryMap[k].push(c);}});
-const today=new Date();let html='';
-["Mo","Tu","We","Th","Fr","Sa","Su"].forEach(d=>{html+=`<div class="cal-day">${d}</div>`;});
-const prevLast=new Date(calYear,calMonth,0).getDate();
-for(let i=startDay-1;i>0;i--)html+=`<div class="cal-cell other">${prevLast-i+1}</div>`;
-for(let i=1;i<=last.getDate();i++){const k=`${calYear}-${calMonth}-${i}`,isToday=today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===i;
-const couponsOnDay=expiryMap[k]||[];const hasC=couponsOnDay.length>0;
-const isExp=hasC&&couponsOnDay.some(c=>{const diff=Math.ceil((parseDate(c.expiryDate)-today)/864e5);return diff>=0&&diff<=3;});
-let cls="cal-cell";if(isToday)cls+=" today";if(hasC)cls+=" has-coupon";if(isExp)cls+=" expiring-day";
-const tip=hasC?` title="${couponsOnDay.map(c=>c.productName).join(', ')}"`:""
-html+=`<div class="${cls}"${tip}>${i}</div>`;}
-const rem=(startDay-1+last.getDate())%7;if(rem>0)for(let i=1;i<=7-rem;i++)html+=`<div class="cal-cell other">${i}</div>`;
-calGrid.innerHTML=html;}
-calPrev.onclick=()=>{calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCal();};
-calNext.onclick=()=>{calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCal();};
+        // ── Calendar ──
+        function renderCal() {
+            const d = new Date(calYear, calMonth, 1), last = new Date(calYear, calMonth + 1, 0), startDay = d.getDay() || 7;
+            calTitle.textContent = d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+            const expiryMap = {}; coupons.forEach(c => { const p = parseDate(c.expiryDate); if (p) { const k = `${p.getFullYear()}-${p.getMonth()}-${p.getDate()}`; if (!expiryMap[k]) expiryMap[k] = []; expiryMap[k].push(c); } });
+            const today = new Date(); let html = '';
+            ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].forEach(d => { html += `<div class="cal-day">${d}</div>`; });
+            const prevLast = new Date(calYear, calMonth, 0).getDate();
+            for (let i = startDay - 1; i > 0; i--)html += `<div class="cal-cell other">${prevLast - i + 1}</div>`;
+            for (let i = 1; i <= last.getDate(); i++) {
+                const k = `${calYear}-${calMonth}-${i}`, isToday = today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === i;
+                const couponsOnDay = expiryMap[k] || []; const hasC = couponsOnDay.length > 0;
+                const isExp = hasC && couponsOnDay.some(c => { const diff = Math.ceil((parseDate(c.expiryDate) - today) / 864e5); return diff >= 0 && diff <= 3; });
+                let cls = "cal-cell"; if (isToday) cls += " today"; if (hasC) cls += " has-coupon"; if (isExp) cls += " expiring-day";
+                const tip = hasC ? ` title="${couponsOnDay.map(c => c.productName).join(', ')}"` : ""
+                html += `<div class="${cls}"${tip}>${i}</div>`;
+            }
+            const rem = (startDay - 1 + last.getDate()) % 7; if (rem > 0) for (let i = 1; i <= 7 - rem; i++)html += `<div class="cal-cell other">${i}</div>`;
+            calGrid.innerHTML = html;
+        }
+        calPrev.onclick = () => { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); };
+        calNext.onclick = () => { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCal(); };
 
-// ── Stats ──
-function updateStats(){const list=searchResults||coupons;const today=new Date();today.setHours(0,0,0,0);
-$("statTotal").textContent=list.length;
-$("statExpiring").textContent=list.filter(c=>{const e=parseDate(c.expiryDate);if(!e)return false;const d=Math.ceil((e-today)/864e5);return d>=0&&d<=3;}).length;
-const stores=new Set(list.map(c=>c.storeName).filter(Boolean));$("statStores").textContent=stores.size;
-let total=0;list.forEach(c=>{const m=c.discountAmount?.match(/[\d.]+/);if(m)total+=parseFloat(m[0]);});
-$("statSavings").textContent=total>0?`£${total.toFixed(2)}`:"—";}
+        // ── Stats ──
+        function updateStats() {
+            const list = searchResults || coupons; const today = new Date(); today.setHours(0, 0, 0, 0);
+            $("statTotal").textContent = list.length;
+            $("statExpiring").textContent = list.filter(c => { const e = parseDate(c.expiryDate); if (!e) return false; const d = Math.ceil((e - today) / 864e5); return d >= 0 && d <= 3; }).length;
+            const stores = new Set(list.map(c => c.storeName).filter(Boolean)); $("statStores").textContent = stores.size;
+            let total = 0; list.forEach(c => { const m = c.discountAmount?.match(/[\d.]+/); if (m) total += parseFloat(m[0]); });
+            $("statSavings").textContent = total > 0 ? `£${total.toFixed(2)}` : "—";
+        }
 
-// ── Render all ──
-function renderAll(){updateStats();renderTabs();renderCoupons();renderCal();}
+        // ── Render all ──
+        function renderAll() { updateStats(); renderTabs(); renderCoupons(); renderCal(); }
 
-function renderCoupons(){const g=getGroups();let list=searchResults||(g[activeGroup]||coupons);
-couponCount.textContent=`${list.length} ${list.length===1?"coupon":"coupons"}`;
-if(!list.length){couponList.innerHTML='<div class="empty"><div class="empty-icon">🏷️</div><p>No coupons found.</p></div>';return;}
-const today=new Date();today.setHours(0,0,0,0);
-couponList.innerHTML=list.map((c,i)=>{const e=parseDate(c.expiryDate),diff=e?Math.ceil((e-today)/864e5):null;
-const exp=diff!==null&&diff>=0&&diff<=3,dead=diff!==null&&diff<0;
-let cls="coupon";if(exp)cls+=" expiring";if(dead)cls+=" expired";
-const daysLabel=diff!==null?(diff<0?"Expired":(diff===0?"Today":(diff===1?"Tomorrow":`${diff} days`))):""
-return`<article class="${cls}" style="animation-delay:${i*50}ms">
-<div class="ct"><h3>${esc(c.productName||"Unknown")}</h3><div class="disc">${esc(c.discountAmount||"—")}</div></div>
-<div class="dets"><div class="det"><span>Store</span><strong>${esc(c.storeName||"Unknown")}</strong></div>
+        function renderCoupons() {
+            const g = getGroups(); let list = searchResults || (g[activeGroup] || coupons);
+            couponCount.textContent = `${list.length} ${list.length === 1 ? "coupon" : "coupons"}`;
+            if (!list.length) { couponList.innerHTML = '<div class="empty"><div class="empty-icon">🏷️</div><p>No coupons found.</p></div>'; return; }
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            couponList.innerHTML = list.map((c, i) => {
+                const e = parseDate(c.expiryDate), diff = e ? Math.ceil((e - today) / 864e5) : null;
+                const exp = diff !== null && diff >= 0 && diff <= 3, dead = diff !== null && diff < 0;
+                let cls = "coupon"; if (exp) cls += " expiring"; if (dead) cls += " expired";
+                const daysLabel = diff !== null ? (diff < 0 ? "Expired" : (diff === 0 ? "Today" : (diff === 1 ? "Tomorrow" : `${diff} days`))) : ""
+                return `<article class="${cls}" style="animation-delay:${i * 50}ms">
+<div class="ct"><h3>${esc(c.productName || "Unknown")}</h3><div class="disc">${esc(c.discountAmount || "—")}</div></div>
+<div class="dets"><div class="det"><span>Store</span><strong>${esc(c.storeName || "Unknown")}</strong></div>
 <div class="det"><span>Expires</span><strong>${esc(fmtDate(c.expiryDate))}</strong></div>
-<div class="det"><span>Status</span><strong>${daysLabel||"—"}</strong></div></div>
-<div class="ca"><button class="bs" type="button" data-del="${esc(c.id)}">Delete</button></div></article>`;}).join("");}
+<div class="det"><span>Status</span><strong>${daysLabel || "—"}</strong></div></div>
+<div class="ca"><button class="bs" type="button" data-del="${esc(c.id)}">Delete</button></div></article>`;
+            }).join("");
+        }
 
-// ── OpenAI extract ──
-async function extractCoupon(url,key){const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
-body:JSON.stringify({model:OPENAI_MODEL,input:[{role:"user",content:[{type:"input_text",text:"Read this coupon photo. Extract: storeName, discountAmount, productName, expiryDate. Return strict JSON. Use YYYY-MM-DD for dates. Empty string if not visible."},{type:"input_image",image_url:url}]}],
-text:{format:{type:"json_schema",name:"coupon_details",schema:{type:"object",additionalProperties:false,properties:{storeName:{type:"string"},discountAmount:{type:"string"},productName:{type:"string"},expiryDate:{type:"string"}},required:["storeName","discountAmount","productName","expiryDate"]},strict:true}}})});
-if(!r.ok){const t=await r.text();throw new Error("OpenAI error: "+r.status+" "+t);}
-const d=await r.json(),txt=d.output_text||d.output?.[0]?.content?.find(i=>i.type==="output_text")?.text;
-if(!txt)throw new Error("No coupon data returned.");return JSON.parse(txt);}
+        // ── OpenAI extract ──
+        async function extractCoupon(url, key) {
+            const r = await fetch("https://api.openai.com/v1/responses", {
+                method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key },
+                body: JSON.stringify({
+                    model: OPENAI_MODEL, input: [{ role: "user", content: [{ type: "input_text", text: "Read this coupon photo. Extract: storeName, discountAmount, productName, expiryDate. Return strict JSON. Use YYYY-MM-DD for dates. Empty string if not visible." }, { type: "input_image", image_url: url }] }],
+                    text: { format: { type: "json_schema", name: "coupon_details", schema: { type: "object", additionalProperties: false, properties: { storeName: { type: "string" }, discountAmount: { type: "string" }, productName: { type: "string" }, expiryDate: { type: "string" } }, required: ["storeName", "discountAmount", "productName", "expiryDate"] }, strict: true } }
+                })
+            });
+            if (!r.ok) { const t = await r.text(); throw new Error("OpenAI error: " + r.status + " " + t); }
+            const d = await r.json(), txt = d.output_text || d.output?.[0]?.content?.find(i => i.type === "output_text")?.text;
+            if (!txt) throw new Error("No coupon data returned."); return JSON.parse(txt);
+        }
 
-function resizeImg(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const mx=1400,s=Math.min(1,mx/Math.max(img.width,img.height)),cv=document.createElement("canvas");cv.width=Math.round(img.width*s);cv.height=Math.round(img.height*s);cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);res(cv.toDataURL("image/jpeg",.86));};img.onerror=()=>rej(new Error("Bad image."));img.src=r.result;};r.onerror=()=>rej(new Error("Can't read file."));r.readAsDataURL(file);});}
+        function resizeImg(file) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => { const img = new Image(); img.onload = () => { const mx = 1400, s = Math.min(1, mx / Math.max(img.width, img.height)), cv = document.createElement("canvas"); cv.width = Math.round(img.width * s); cv.height = Math.round(img.height * s); cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height); res(cv.toDataURL("image/jpeg", .86)); }; img.onerror = () => rej(new Error("Bad image.")); img.src = r.result; }; r.onerror = () => rej(new Error("Can't read file.")); r.readAsDataURL(file); }); }
 
-// ── Helpers ──
-function loadCoupons(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(s)?s:[];}catch{return[];}}
-function saveCoupons(){localStorage.setItem(STORAGE_KEY,JSON.stringify(coupons));}
-function setStatus(m,err=false){statusBox.textContent=m;statusBox.classList.toggle("error",!!err);}
-function isExpSoon(v){const e=parseDate(v);if(!e)return false;const t=new Date();t.setHours(0,0,0,0);const d=Math.ceil((e-t)/864e5);return d>=0&&d<=3;}
-function normDate(v){const p=parseDate(v);if(!p)return cl(v);return`${p.getFullYear()}-${String(p.getMonth()+1).padStart(2,"0")}-${String(p.getDate()).padStart(2,"0")}`;}
-function parseDate(v){if(!v)return null;const t=String(v).trim(),m=t.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(m)return new Date(+m[1],m[2]-1,+m[3]);const p=new Date(t);return isNaN(p.getTime())?null:new Date(p.getFullYear(),p.getMonth(),p.getDate());}
-function fmtDate(v){const p=parseDate(v);if(!p)return v||"Unknown";return p.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});}
-function cl(v){return String(v||"").trim();}
-function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
-</script>
+        // ── Helpers ──
+        function loadCoupons() { try { const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); return Array.isArray(s) ? s : []; } catch { return []; } }
+        function saveCoupons() { localStorage.setItem(STORAGE_KEY, JSON.stringify(coupons)); }
+        function setStatus(m, err = false) { statusBox.textContent = m; statusBox.classList.toggle("error", !!err); }
+        function isExpSoon(v) { const e = parseDate(v); if (!e) return false; const t = new Date(); t.setHours(0, 0, 0, 0); const d = Math.ceil((e - t) / 864e5); return d >= 0 && d <= 3; }
+        function normDate(v) { const p = parseDate(v); if (!p) return cl(v); return `${p.getFullYear()}-${String(p.getMonth() + 1).padStart(2, "0")}-${String(p.getDate()).padStart(2, "0")}`; }
+        function parseDate(v) { if (!v) return null; const t = String(v).trim(), m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/); if (m) return new Date(+m[1], m[2] - 1, +m[3]); const p = new Date(t); return isNaN(p.getTime()) ? null : new Date(p.getFullYear(), p.getMonth(), p.getDate()); }
+        function fmtDate(v) { const p = parseDate(v); if (!p) return v || "Unknown"; return p.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }); }
+        function cl(v) { return String(v || "").trim(); }
+        function esc(v) { return String(v).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
+    </script>
 </body>
+
 </html>
