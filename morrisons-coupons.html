@@ -811,10 +811,8 @@
                         <div class="info">Connect to your graph database.</div>
                         <label>URI</label>
                         <input id="neo4jUri" type="text" placeholder="neo4j+s://...">
-                        <label style="margin-top:8px">Username</label>
-                        <input id="neo4jUser" type="text" placeholder="neo4j">
-                        <label style="margin-top:8px">Password</label>
-                        <input id="neo4jPass" type="password" placeholder="Password">
+                        <label style="margin-top:8px">API Key / Password</label>
+                        <input id="neo4jPass" type="password" placeholder="Key...">
                         <button id="saveNeoButton" class="bs" type="button" style="margin-top:10px; width:100%">Save Neo4j Credentials</button>
                         <div class="ks" style="margin-top:4px"><span id="neoStatus">Not connected.</span><button id="clearNeoButton" class="bl" type="button">Clear</button></div>
                     </div>
@@ -850,7 +848,7 @@
     <script>
         const OPENAI_MODEL = "gpt-4.1-mini", API_KEY_KEY = "morrisonsOpenAiApiKey", NEO4J_CREDS_KEY = "neo4jCreds";
         const $ = id => document.getElementById(id);
-        const form = $("couponForm"), apiKeyInput = $("apiKeyInput"), saveKeyBtn = $("saveKeyButton"), clearKeyBtn = $("clearKeyButton"), keyStatus = $("keyStatus"), photoInput = $("couponPhoto"), preview = $("preview"), statusBox = $("status"), scanBtn = $("scanButton"), clearAllBtn = $("clearAllButton"), couponList = $("couponList"), couponCount = $("couponCount"), searchInput = $("searchInput"), aiSearchBtn = $("aiSearchBtn"), groupTabs = $("groupTabs"), calGrid = $("calGrid"), calTitle = $("calTitle"), calPrev = $("calPrev"), calNext = $("calNext"), neo4jUri = $("neo4jUri"), neo4jUser = $("neo4jUser"), neo4jPass = $("neo4jPass"), saveNeoBtn = $("saveNeoButton"), clearNeoBtn = $("clearNeoButton"), neoStatus = $("neoStatus");
+        const form = $("couponForm"), apiKeyInput = $("apiKeyInput"), saveKeyBtn = $("saveKeyButton"), clearKeyBtn = $("clearKeyButton"), keyStatus = $("keyStatus"), photoInput = $("couponPhoto"), preview = $("preview"), statusBox = $("status"), scanBtn = $("scanButton"), clearAllBtn = $("clearAllButton"), couponList = $("couponList"), couponCount = $("couponCount"), searchInput = $("searchInput"), aiSearchBtn = $("aiSearchBtn"), groupTabs = $("groupTabs"), calGrid = $("calGrid"), calTitle = $("calTitle"), calPrev = $("calPrev"), calNext = $("calNext"), neo4jUri = $("neo4jUri"), neo4jPass = $("neo4jPass"), saveNeoBtn = $("saveNeoButton"), clearNeoBtn = $("clearNeoButton"), neoStatus = $("neoStatus");
 
         let coupons = [], activeGroup = "all", calMonth = new Date().getMonth(), calYear = new Date().getFullYear(), searchResults = null;
         updateKeyStatus(); renderAll();
@@ -869,19 +867,19 @@
         function getNeoCreds() { try { return JSON.parse(localStorage.getItem(NEO4J_CREDS_KEY)) || {}; } catch { return {}; } }
         async function initNeo4j() {
             const c = getNeoCreds(); if(driver) { await driver.close(); driver = null; }
-            if(!c.uri || !c.user || !c.pass) { neoStatus.textContent = "Not connected."; clearNeoBtn.disabled = true; return; }
+            if(!c.uri || !c.pass) { neoStatus.textContent = "Not connected."; clearNeoBtn.disabled = true; return; }
             try {
-                driver = neo4j.driver(c.uri, neo4j.auth.basic(c.user, c.pass));
+                driver = neo4j.driver(c.uri, neo4j.auth.basic(c.user || "neo4j", c.pass));
                 await driver.verifyConnectivity();
                 neoStatus.textContent = "✓ Connected to Neo4j."; clearNeoBtn.disabled = false;
                 await loadCouponsFromNeo4j();
             } catch(e) { neoStatus.textContent = "Connection failed."; driver = null; }
         }
         saveNeoBtn.onclick = async () => {
-            const uri = neo4jUri.value.trim(), user = neo4jUser.value.trim(), pass = neo4jPass.value.trim();
-            if(!uri || !user || !pass) { setStatus("Enter all Neo4j details.", true); return; }
-            localStorage.setItem(NEO4J_CREDS_KEY, JSON.stringify({uri, user, pass}));
-            neo4jUri.value=""; neo4jUser.value=""; neo4jPass.value="";
+            const uri = neo4jUri.value.trim(), pass = neo4jPass.value.trim();
+            if(!uri || !pass) { setStatus("Enter Neo4j URI and Key.", true); return; }
+            localStorage.setItem(NEO4J_CREDS_KEY, JSON.stringify({uri, user: "neo4j", pass}));
+            neo4jUri.value=""; neo4jPass.value="";
             setStatus("Connecting to Neo4j..."); await initNeo4j(); setStatus("Neo4j settings saved ✓");
         };
         clearNeoBtn.onclick = () => { localStorage.removeItem(NEO4J_CREDS_KEY); initNeo4j(); coupons = []; renderAll(); setStatus("Neo4j cleared."); };
