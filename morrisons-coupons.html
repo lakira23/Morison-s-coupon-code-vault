@@ -844,7 +844,7 @@
             </section>
         </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/neo4j-driver"></script>
+    <script src="https://cdn.jsdelivr.net/npm/neo4j-driver/lib/browser/neo4j-web.min.js"></script>
     <script>
         const OPENAI_MODEL = "gpt-4.1-mini", API_KEY_KEY = "morrisonsOpenAiApiKey", NEO4J_CREDS_KEY = "neo4jCreds";
         const $ = id => document.getElementById(id);
@@ -873,7 +873,11 @@
                 await driver.verifyConnectivity();
                 neoStatus.textContent = "✓ Connected to Neo4j."; clearNeoBtn.disabled = false;
                 await loadCouponsFromNeo4j();
-            } catch(e) { neoStatus.textContent = "Connection failed."; driver = null; }
+            } catch(e) { 
+                console.error("Neo4j Error:", e);
+                neoStatus.textContent = "Connection failed: " + (e.message || e); 
+                driver = null; 
+            }
         }
         saveNeoBtn.onclick = async () => {
             const uri = neo4jUri.value.trim(), pass = neo4jPass.value.trim();
